@@ -27,5 +27,5 @@ jobs:
       - run: npm install eslint --save-dev
       - run: npx install-peerdeps --dev eslint-config-airbnb
       - run: npm install -D eslint-config-prettier eslint-plugin-prettier
-      - run: eslint --config ./.eslintrc.json "**/*.js" --no-error-on-unmatched-pattern
+      - run: npx eslint --config ./.eslintrc.json "**/*.js" --no-error-on-unmatched-pattern
 
