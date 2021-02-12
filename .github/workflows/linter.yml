@@ -1,0 +1,28 @@
+name: Full Linter CSS + HTML
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Launch html Linter
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm install --global html-linter
+      - run: html-linter --config ./.html-linter_config.json **/*.html
+
+      - name: Css Linter
+        uses: actions-hub/stylelint@master
+        env:
+          CONFIG: ./.css-lint_config.json
+          PATTERN: "**/*.css"
+
