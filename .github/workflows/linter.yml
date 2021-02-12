@@ -17,12 +17,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12
+
       - run: npm install --global html-linter
       - run: html-linter --config ./.html-linter_config.json **/*.html
 
-      - name: Css Linter
-        uses: actions-hub/stylelint@master
-        env:
-          CONFIG: ./.css-lint_config.json
-          PATTERN: "**/*.css"
+      - run: npm install --save-dev stylelint stylelint-config-standard
+      - run: npx stylelint --config ./.css-linter_config.json "**/*.css"
 
