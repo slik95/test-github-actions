@@ -21,6 +21,6 @@ jobs:
       - run: npm install --global html-linter
       - run: html-linter --config ./.html-linter_config.json **/*.html
 
-      - run: npm install --save-dev stylelint stylelint-config-standard
-      - run: npx stylelint --config ./.css-linter_config.json "**/*.css"
+      - run: npm install --save-dev stylelint stylelint-config-standard 
+      - run: npx stylelint --config ./.css-linter_config.json "**/*.css" --allow-empty-input
 
