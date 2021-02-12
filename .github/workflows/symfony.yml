@@ -17,8 +17,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12
-          - run: npm install --global html-linter
-          - run: html-linter --config ./html-linter_config.json **/*.html
+      - run: npm install --global html-linter
+      - run: html-linter --config ./html-linter_config.json **/*.html
 
       - name: Css Linter
         uses: actions-hub/stylelint@master
