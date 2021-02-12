@@ -1,4 +1,4 @@
-name: Full CI process for Symfony 5
+name: Full CI process for Symfony
 on:
   push:
     branches:
@@ -6,7 +6,7 @@ on:
       - develop
 jobs:
   symfony:
-    name: Symfony 5.2 (PHP ${{ matrix.php-versions }})
+    name: Symfony (PHP ${{ matrix.php-versions }})
     # https://hub.docker.com/_/ubuntu/
     runs-on: ubuntu-20.04
     services:
@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php-versions: ['7.4', '8.0']
+        php-versions: ['7.2', '7.4', '8.0']
     steps:
 
       # —— Setup Github actions 🐙 —————————————————————————————————————————————
