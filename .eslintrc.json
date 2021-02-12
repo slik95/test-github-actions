@@ -1,0 +1,13 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "jquery": true
+  },
+  "extends": ["airbnb", "prettier"],
+  "plugins": ["prettier"],
+  "rules": {
+    "import/extensions": ["error","ignorePackages"],
+    "prettier/prettier": ["error"]
+  }
+}
