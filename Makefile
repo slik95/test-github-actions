@@ -71,6 +71,26 @@ php-set-8-0: ## Set php 8.0 as the current PHP version
 	$(SPHP) 8.0
 
 ## —— Symfony 🎵 ———————————————————————————————————————————————————————————————
+reset: ## Reset the project
+	$(GIT) reset --hard
+	$(GIT) pull origin
+	rm -rf vendor node_modules
+	$(COMPOSER) install
+	$(YARN) install
+	$(SYMFONY) doctrine:database:drop --if-exists --force -n
+	$(SYMFONY) doctrine:database:create
+	$(SYMFONY) doctrine:migration:migrate -n
+
+db: ## Create database + run migration
+	$(SYMFONY) doctrine:database:drop --if-exists --force -n
+	$(SYMFONY) doctrine:database:create
+	$(SYMFONY) doctrine:migration:migrate -n
+
+dbtest:
+	$(SYMFONY) doctrine:database:drop --force --if-exists -n --env=test
+	$(SYMFONY) doctrine:database:create --env=test
+	$(SYMFONY) doctrine:migration:migrate -n --env=test
+
 sf: ## List all Symfony commands
 	$(SYMFONY)
 
@@ -82,12 +102,6 @@ warmup: ## Warmup the cache
 
 fix-perms: ## Fix permissions of all var files
 	chmod -R 777 var/*
-
-start: ## Start the local Symfony web server
-	$(SYMFONY) server:start
-
-stop: ## Stop the local Symfony web server
-	$(SYMFONY) server:stop
 
 assets: purge ## Install the assets with symlinks in the public folder
 	$(SYMFONY) assets:install public/ --symlink --relative
@@ -105,31 +119,38 @@ cert-install: ## Install the local HTTPS certificates
 serve: ## Serve the application with HTTPS support
 	$(SYMFONY_BIN) serve --daemon --port=$(HTTP_PORT)
 
-unserve: ## Stop the webserver
+start: ## Start the local Symfony web server
+	$(SYMFONY_BIN) serve:start -d
+
+stop: ## Stop the local Symfony web server
 	$(SYMFONY_BIN) server:stop
 
 ## —— Tests ✅ —————————————————————————————————————————————————————————————————
-test: phpunit.xml check ## Run main functional and unit tests
-	$(eval testsuite ?= 'main') # or "external"
-	$(eval filter ?= '.')
-	$(PHPUNIT) --testsuite=$(testsuite) --filter=$(filter) --stop-on-failure
+test: dbtest check ## Run main functional and unit tests
+	$(PHPUNIT)
 
-test-all: phpunit.xml ## Run all tests
+test-all: ## Run all tests
 	$(PHPUNIT) --stop-on-failure
 
 ## —— Coding standards ✨ ——————————————————————————————————————————————————————
 cs: lint-php lint-js ## Run all coding standards checks
-
-static-analysis: stan ## Run the static analysis (PHPStan)
-
-stan: ## Run PHPStan
-	$(PHPSTAN) analyse -c configuration/phpstan.neon --memory-limit 1G
 
 lint-php: ## Lint files with php-cs-fixer
 	$(PHP_CS_FIXER) fix --dry-run
 
 fix-php: ## Fix files with php-cs-fixer
 	$(PHP_CS_FIXER) fix
+
+lint-js: ## Lints JS coding standarts
+	$(NPX) eslint assets/js
+
+fix-js: ## Fixes JS files
+	$(NPX) eslint assets/js --fix
+
+static-analysis: stan ## Run the static analysis (PHPStan)
+
+stan: ## Run PHPStan
+	$(PHPSTAN) analyse -c configuration/phpstan.neon --memory-limit 1G
 
 ## —— Yarn 🐱 / JavaScript —————————————————————————————————————————————————————
 dev: ## Rebuild assets for the dev env

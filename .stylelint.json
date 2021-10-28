@@ -1,7 +1,9 @@
 {
-  "extends": "stylelint-config-airbnb",
+  "extends": ["stylelint-config-standard-scss"],
   "rules": {
     "indentation": "tab",
-    "number-leading-zero": null
+    "number-leading-zero": null,
+    "at-rule-no-unknown": null,
+    "scss/at-rule-no-unknown": true
   }
 }

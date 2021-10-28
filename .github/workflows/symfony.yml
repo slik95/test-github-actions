@@ -1,9 +1,5 @@
 name: Full CI process for Symfony
-on:
-  push:
-    branches:
-      - main
-      - develop
+on: [push]
 jobs:
   symfony:
     name: Symfony (PHP ${{ matrix.php-versions }})
@@ -21,7 +17,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php-versions: ['7.4', '8.0']
+        php-versions: ['8.0']
     steps:
 
       # —— Setup Github actions 🐙 —————————————————————————————————————————————
@@ -43,11 +39,11 @@ jobs:
 
       ## —— Yarn 🐱 ————————————————————————————————————————————————————————————
       - name: Yarn install
-        uses: borales/actions-yarn@v2.0.0
+        uses: borales/actions-yarn@v2.3.0
         with:
           cmd: install
       - name: Yarn build
-        uses: borales/actions-yarn@v2.0.0
+        uses: borales/actions-yarn@v2.3.0
         with:
           cmd: run encore production
 
@@ -60,7 +56,7 @@ jobs:
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
       - name: Cache composer dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -78,12 +74,12 @@ jobs:
           bin/console -V
 
       ## —— Coding standards ✨ ————————————————————————————————————————————————
-      # Can't handle PHP8 for now
-      - name: Coding standards checks (php_codesniffer + php-cs-fixer)
+      - name: Coding standards checks (php-cs-fixer)
         run: make cs
-        if: matrix.php-versions == '7.4'
+        if: matrix.php-versions == '8.0'
 
-      ## —— Static analysis ✨ —————————————————————————————————————————————————
-      - name: Static analysis of PHP code (PHPStan)
-        run: make static-analysis
-        if: matrix.php-versions == '7.4'
+
+      ## —— Tests ✅ —————————————————————————————————————————————————————————————————
+      - name: Launch Unit Test(php-unit)
+        run: make test
+        if: matrix.php-versions == '8.0'

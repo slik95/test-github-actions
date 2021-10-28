@@ -4,10 +4,13 @@
     "es6": true,
     "jquery": true
   },
-  "extends": ["airbnb", "prettier"],
-  "plugins": ["prettier"],
+  "extends": ["plugin:prettier/recommended"],
+  "plugins": ["import", "react"],
   "rules": {
     "import/extensions": ["error","ignorePackages"],
     "prettier/prettier": ["error"]
+  },
+  "parserOptions": {
+    "sourceType": "module"
   }
 }

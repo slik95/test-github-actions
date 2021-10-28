@@ -1,9 +1,5 @@
 name: Full Linter CSS + HTML
-on:
-  push:
-    branches:
-      - main
-
+on: [push]
 jobs:
   run-linters:
     name: Run linters
@@ -13,19 +9,12 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v2
 
-      - name: Launch html Linter
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
+      - name: Set up node
+        uses: actions/setup-node@v2
 
-      - run: npm install --global html-linter
-      - run: html-linter --config ./.html-linter.json **/*.html
-
-      - run: npm install --save-dev stylelint stylelint-config-standard 
+      - run: yarn install
+      - run: npx html-linter --config ./.html-linter.json **/*.html
       - run: npx stylelint --config ./.stylelint.json "**/*.css" --allow-empty-input
+      - run: npx eslint --config ./.eslintrc.json "assets/**/*.js" --no-error-on-unmatched-pattern
 
-      - run: npm install eslint --save-dev
-      - run: npx install-peerdeps --dev eslint-config-airbnb
-      - run: npm install -D eslint-config-prettier eslint-plugin-prettier
-      - run: npx eslint --config ./.eslintrc.json "**/*.js" --no-error-on-unmatched-pattern
 
